@@ -13,9 +13,42 @@ $(function() {
     var ItemView = Backbone.View.extend({
         tagName: 'li',
 
+        events: {
+            'click span.swap': 'swap',
+            'click span.delete': 'remove'
+        },
+
+        initialize: function() {
+            _.bindAll(this, 'render', 'unrender', 'swap', 'remove'); // every function that uses 'this' as the current object should be in here
+            this.model.bind('change', this.render);
+            this.model.bind('remove', this.unrender);
+        },
+
         render: function() {
-            $(this.el).html('<span>' + this.model.get('part1') + ' ' + this.model.get('part2') + '</span>');
+            $(this.el).html(
+                '<span>' + this.model.get('part1') + ' ' + this.model.get('part2') + '</span>'
+                + '&nbsp; &nbsp;'
+                + '<span class="swap" style="cursor:pointer; color: red">[swap]</span>'
+                + '<span class="delete" style="cursor:pointer; color: blue">[delete]</span>'
+            );
             return this;
+        },
+
+        unrender: function() {
+            $(this.el).remove();
+        },
+
+        swap: function() {
+            var swapped = {
+                part1: this.model.get('part2'),
+                part2: this.model.get('part1')
+            };
+
+            this.model.set(swapped);
+        },
+
+        remove: function() {
+            this.model.destroy();
         }
     });
 
