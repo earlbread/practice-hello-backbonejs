@@ -10,6 +10,15 @@ $(function() {
         model: Item
     });
 
+    var ItemView = Backbone.View.extend({
+        tagName: 'li',
+
+        render: function() {
+            $(this.el).html('<span>' + this.model.get('part1') + ' ' + this.model.get('part2') + '</span>');
+            return this;
+        }
+    });
+
     var ListView = Backbone.View.extend({
         el: $('body'),
 
@@ -48,7 +57,8 @@ $(function() {
         },
 
         appendItem: function(item) {
-            $('ul', this.el).append('<li class="item">' + item.get('part1') + ' ' + item.get('part2') + '</li>');
+            var itemView = new ItemView({ model: item });
+            $('ul', this.el).append(itemView.render().el);
         }
     });
 
